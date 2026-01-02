@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>For You ❤️</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(180deg, #1a0a1f 0%, #2d1435 50%, #4a1f4a 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "Georgia", serif;
+      color: #fff;
+      overflow-x: hidden;
+      position: relative;
+      padding: 20px;
+    }
+
+    /* Falling stars */
+    .stars-container {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .star {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      background: white;
+      border-radius: 50%;
+      box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+      animation: fall linear infinite;
+      opacity: 0;
+    }
+
+    @keyframes fall {
+      0% {
+        opacity: 0;
+        transform: translateY(-100px);
+      }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% {
+        opacity: 0;
+        transform: translateY(100vh);
+      }
+    }
+
+    /* Floating hearts */
+    .hearts-container {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .floating-heart {
+      position: absolute;
+      font-size: 24px;
+      animation: float-heart 10s ease-in-out infinite;
+      opacity: 0;
+    }
+
+    @keyframes float-heart {
+      0% {
+        opacity: 0;
+        transform: translateY(100vh) scale(0.5) rotate(0deg);
+      }
+      10% { opacity: 0.7; }
+      90% { opacity: 0.7; }
+      100% {
+        opacity: 0;
+        transform: translateY(-100px) scale(1) rotate(360deg);
+      }
+    }
+
+    .wrapper {
+      width: 100%;
+      max-width: 800px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+      z-index: 10;
+    }
+
+    /* START SCREEN */
+    .start-screen {
+      animation: fadeIn 1.5s ease forwards;
+    }
+
+    .start-message {
+      font-size: 32px;
+      margin-bottom: 15px;
+      font-weight: 600;
+      background: linear-gradient(135deg, #ff6b9d, #ffa6c1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 30px rgba(255, 107, 157, 0.5);
+      line-height: 1.4;
+    }
+
+    .start-message span {
+      font-size: 20px;
+      display: block;
+      margin-top: 12px;
+      color: #ffa6c1;
+      text-shadow: 0 0 15px rgba(255, 166, 193, 0.6);
+      font-weight: 400;
+    }
+
+    .start-btn {
+      padding: 18px 50px;
+      font-size: 22px;
+      font-weight: 700;
+      border-radius: 50px;
+      border: none;
+      cursor: pointer;
+      background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
+      color: white;
+      font-family: 'Georgia', serif;
+      box-shadow: 
+        0 15px 40px rgba(255,107,157,.6),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+      letter-spacing: 1px;
+      margin-top: 25px;
+      animation: pulse-glow 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-glow {
+      0%, 100% {
+        box-shadow: 0 15px 40px rgba(255,107,157,.6);
+        transform: scale(1);
+      }
+      50% {
+        box-shadow: 0 18px 45px rgba(255,107,157,.8);
+        transform: scale(1.03);
+      }
+    }
+
+    .start-btn::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s ease, height 0.6s ease;
+    }
+
+    .start-btn:hover::before {
+      width: 400px;
+      height: 400px;
+    }
+
+    .start-btn:hover {
+      transform: translateY(-5px) scale(1.05);
+      box-shadow: 
+        0 20px 50px rgba(255,107,157,.8),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+      animation: none;
+    }
+
+    /* VIDEO FRAME */
+    .video-container {
+      display: none;
+      position: relative;
+      width: 100%;
+      max-width: 650px;
+      animation: fadeIn 1s ease forwards;
+    }
+
+    .video-frame {
+      position: relative;
+      padding: 20px;
+      background: linear-gradient(135deg, rgba(255, 107, 157, 0.2), rgba(196, 69, 105, 0.2));
+      border-radius: 25px;
+      box-shadow: 
+        0 30px 90px rgba(255, 107, 157, 0.5),
+        inset 0 0 80px rgba(255, 107, 157, 0.1);
+      border: 3px solid rgba(255, 166, 193, 0.5);
+    }
+
+    .video-frame::before {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      background: rgba(255, 107, 157, 0.3);
+      border-radius: 25px;
+      z-index: -1;
+      filter: blur(15px);
+    }
+
+    /* Decorative hearts around frame */
+    .frame-heart {
+      position: absolute;
+      font-size: 30px;
+      opacity: 0.7;
+      animation: frame-heart-float 3s ease-in-out infinite;
+      filter: drop-shadow(0 5px 15px rgba(255, 107, 157, 0.6));
+    }
+
+    .frame-heart.top-left {
+      top: -8px;
+      left: -8px;
+    }
+
+    .frame-heart.top-right {
+      top: -8px;
+      right: -8px;
+      animation-delay: 1s;
+    }
+
+    .frame-heart.bottom-left {
+      bottom: -8px;
+      left: -8px;
+      animation-delay: 2s;
+    }
+
+    .frame-heart.bottom-right {
+      bottom: -8px;
+      right: -8px;
+      animation-delay: 1.5s;
+    }
+
+    @keyframes frame-heart-float {
+      0%, 100% {
+        transform: translateY(0) scale(1) rotate(0deg);
+      }
+      50% {
+        transform: translateY(-10px) scale(1.15) rotate(10deg);
+      }
+    }
+
+    video {
+      width: 100%;
+      border-radius: 18px;
+      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.5);
+      display: block;
+    }
+
+    /* FINAL SCREEN */
+    .final-screen {
+      display: none;
+      width: 100%;
+      max-width: 650px;
+      position: relative;
+      animation: fadeIn 1s ease forwards;
+    }
+
+    .final-frame {
+      position: relative;
+      padding: 20px;
+      background: linear-gradient(135deg, rgba(255, 107, 157, 0.2), rgba(196, 69, 105, 0.2));
+      border-radius: 25px;
+      box-shadow: 
+        0 30px 90px rgba(255, 107, 157, 0.5),
+        inset 0 0 80px rgba(255, 107, 157, 0.1);
+      border: 3px solid rgba(255, 166, 193, 0.5);
+    }
+
+    .final-frame::before {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      background: rgba(255, 107, 157, 0.3);
+      border-radius: 25px;
+      z-index: -1;
+      filter: blur(15px);
+    }
+
+    .final-content {
+      position: relative;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.5);
+      min-height: 500px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Background photo that shows first, then fades */
+    .final-content img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 1;
+      transition: opacity 2s ease;
+    }
+
+    .final-content img.fade-out {
+      opacity: 0.15;
+    }
+
+    /* Message overlay */
+    .final-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+      z-index: 2;
+    }
+
+    /* Individual messages with hearts */
+    .end-message {
+      font-size: 19px;
+      line-height: 1.7;
+      margin-bottom: 20px;
+      opacity: 0;
+      color: #ffd4e8;
+      text-shadow: 
+        0 3px 10px rgba(0, 0, 0, 0.9),
+        0 0 20px rgba(255, 107, 157, 0.5);
+      transition: opacity 1.5s ease, transform 1.5s ease;
+      transform: translateY(20px) scale(0.95);
+      text-align: center;
+      max-width: 90%;
+      font-weight: 500;
+    }
+
+    .end-message.show {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    /* Button */
+    .end-btn {
+      padding: 16px 40px;
+      font-size: 19px;
+      font-weight: 700;
+      border-radius: 50px;
+      border: none;
+      cursor: pointer;
+      background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
+      color: white;
+      font-family: 'Georgia', serif;
+      box-shadow: 
+        0 15px 40px rgba(255,107,157,.6),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+      opacity: 0;
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+      margin-top: 15px;
+    }
+
+    .end-btn.show {
+      opacity: 1;
+      animation: fadeInUp 1.5s ease forwards;
+    }
+
+    .end-btn::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s ease, height 0.6s ease;
+    }
+
+    .end-btn:hover::before {
+      width: 400px;
+      height: 400px;
+    }
+
+    .end-btn:hover {
+      transform: translateY(-5px) scale(1.05);
+      box-shadow: 0 20px 50px rgba(255,107,157,.8);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes fadeInUp {
+      from { 
+        opacity: 0; 
+        transform: translateY(20px);
+      }
+      to { 
+        opacity: 1; 
+        transform: translateY(0);
+      }
+    }
+
+    /* Mobile responsive */
+    @media (max-width: 768px) {
+      .start-message {
+        font-size: 26px;
+      }
+
+      .start-message span {
+        font-size: 18px;
+      }
+
+      .start-btn {
+        font-size: 19px;
+        padding: 16px 40px;
+      }
+
+      .video-frame,
+      .final-frame {
+        padding: 15px;
+      }
+
+      .frame-heart {
+        font-size: 26px;
+      }
+
+      .final-content {
+        min-height: 400px;
+      }
+
+      .final-overlay {
+        padding: 30px;
+      }
+
+      .end-message {
+        font-size: 17px;
+        margin-bottom: 18px;
+      }
+
+      .end-btn {
+        font-size: 17px;
+        padding: 14px 35px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .start-message {
+        font-size: 22px;
+      }
+
+      .start-message span {
+        font-size: 16px;
+      }
+
+      .video-frame,
+      .final-frame {
+        padding: 12px;
+      }
+
+      .frame-heart {
+        font-size: 22px;
+      }
+
+      .final-content {
+        min-height: 350px;
+      }
+
+      .final-overlay {
+        padding: 20px;
+      }
+
+      .end-message {
+        font-size: 15px;
+        margin-bottom: 15px;
+      }
+
+      .end-btn {
+        font-size: 15px;
+        padding: 12px 30px;
+      }
+    }
+    .closure-text {
+  margin-top: 18px;
+  font-size: 14px;
+  opacity: 0;
+  color: rgba(255, 212, 232, 0.7);
+  transition: opacity 2s ease;
+  font-style: italic;
+}
+.closure-text.show {
+  opacity: 1;
+}
+
+  </style>
+</head>
+
+<body>
+
+  <div class="stars-container" id="stars"></div>
+  <div class="hearts-container" id="hearts"></div>
+
+  <div class="wrapper">
+
+    <!-- START -->
+    <div class="start-screen" id="startScreen">
+      <div class="start-message">
+        Do you love me?
+        <span>Say yes and you'll get your surprise 💖</span>
+      </div>
+      <button class="start-btn" id="playBtn">YES ❤️</button>
+    </div>
+
+    <!-- VIDEO -->
+    <div class="video-container" id="videoContainer">
+      <div class="video-frame">
+        <div class="frame-heart top-left">💕</div>
+        <div class="frame-heart top-right">💖</div>
+        <div class="frame-heart bottom-left">💗</div>
+        <div class="frame-heart bottom-right">💝</div>
+        
+        <video id="finalVideo" playsinline>
+          <source src="../static/animations/final.mp4" type="video/mp4">
+        </video>
+      </div>
+    </div>
+
+    <!-- FINAL IMAGE + MESSAGE -->
+    <div class="final-screen" id="finalScreen">
+      <div class="final-frame">
+        <div class="frame-heart top-left">💕</div>
+        <div class="frame-heart top-right">💖</div>
+        <div class="frame-heart bottom-left">💗</div>
+        <div class="frame-heart bottom-right">💝</div>
+        
+        <div class="final-content">
+          <img src="../static/animations/image.png" id="finalImage" alt="Our photo">
+
+          <div class="final-overlay">
+
+            <div class="end-message" id="msg1">
+              Bas yahi chhota sa surprise tha kuki tu bahut door h abhi 🥺
+            </div>
+            <div class="end-message" id="msg2">
+              Socha to bahut kuchh tha… but fir kabhi…
+            </div>
+            <div class="end-message" id="msg3">
+              Thankyou bebo for everything ❤️
+            </div>
+            <div class="end-message" id="msg4">
+              Love you forever 💖
+            </div>
+
+            <button class="end-btn" id="endBtn">
+              Love you too, Kallu ❤️
+            </button>
+              <div class="closure-text" id="closureText">
+  Saved in my heart 🤍
+</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+
+  <!-- BACKGROUND MUSIC AFTER VIDEO -->
+  <audio id="endMusic" loop>
+    <source src="../static/music/bg1.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    // Falling stars
+    const starsContainer = document.getElementById("stars");
+    
+    function createFallingStar() {
+      const star = document.createElement("div");
+      star.className = "star";
+      star.style.left = Math.random() * 100 + "%";
+      star.style.animationDuration = (3 + Math.random() * 4) + "s";
+      star.style.animationDelay = Math.random() * 3 + "s";
+      starsContainer.appendChild(star);
+      
+      setTimeout(() => star.remove(), 8000);
+    }
+
+    for (let i = 0; i < 40; i++) {
+      createFallingStar();
+    }
+
+    setInterval(() => createFallingStar(), 500);
+
+    // Floating hearts
+    const heartsContainer = document.getElementById("hearts");
+    const heartSymbols = ['💕', '💖', '💗', '💝', '❤️'];
+    
+    function createFloatingHeart() {
+      const heart = document.createElement("div");
+      heart.className = "floating-heart";
+      heart.textContent = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+      heart.style.left = Math.random() * 100 + "%";
+      heart.style.animationDuration = (8 + Math.random() * 4) + "s";
+      heart.style.animationDelay = Math.random() * 3 + "s";
+      heartsContainer.appendChild(heart);
+      
+      setTimeout(() => heart.remove(), 13000);
+    }
+
+    for (let i = 0; i < 12; i++) {
+      createFloatingHeart();
+    }
+
+    setInterval(() => createFloatingHeart(), 1500);
+
+    // Main logic
+    const playBtn = document.getElementById("playBtn");
+    const startScreen = document.getElementById("startScreen");
+    const videoContainer = document.getElementById("videoContainer");
+    const video = document.getElementById("finalVideo");
+    const finalScreen = document.getElementById("finalScreen");
+    const finalImage = document.getElementById("finalImage");
+    const endMusic = document.getElementById("endMusic");
+    const msgs = document.querySelectorAll(".end-message");
+    const endBtn = document.getElementById("endBtn");
+
+    playBtn.onclick = () => {
+   startScreen.style.display = "none";
+   videoContainer.style.display = "block";
+
+  // tiny breathing pause
+  setTimeout(() => {
+    video.play();
+  }, 350); // 300–400ms is perfect
+};
+
+
+    video.onended = () => {
+      videoContainer.style.display = "none";
+      finalScreen.style.display = "block";
+
+      // Start background music
+      endMusic.volume = 0.15;
+      endMusic.play().catch(() => {});
+
+      // Photo visible for 3 seconds
+      setTimeout(() => {
+        // Fade the photo
+        finalImage.classList.add("fade-out");
+      }, 3000);
+
+      // Messages appear one by one after photo fades
+      msgs.forEach((msg, i) => {
+        setTimeout(() => {
+          msg.classList.add("show");
+        }, 4500 + i * 1800);
+      });
+
+      // Show button at the end, inside the box
+      setTimeout(() => {
+        endBtn.classList.add("show");
+      }, 11500);
+    };
+
+    endBtn.onclick = () => {
+  const closure = document.getElementById("closureText");
+
+  // show final soft line
+  closure.classList.add("show");
+
+  // fade music
+  let vol = music.volume;
+  const fade = setInterval(() => {
+    if (vol > 0.01) {
+      vol -= 0.01;
+      music.volume = vol;
+    } else {
+      clearInterval(fade);
+      music.pause();
+    }
+  }, 80);
+
+  // dim screen slightly
+  document.body.style.transition = "background 2s ease";
+  document.body.style.background =
+    "linear-gradient(180deg, #120815, #1a0a1f)";
+
+  // exit after closure moment
+  setTimeout(() => {
+    window.location.href = "about:blank";
+  }, 3000);
+};
+
+  </script>
+
+</body>
+</html>

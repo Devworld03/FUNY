@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>For You 💕</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(180deg, #1a0a1f 0%, #2d1435 50%, #4a1f4a 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Georgia', serif;
+      overflow: hidden;
+      position: relative;
+      padding: 20px;
+    }
+
+    /* Falling stars */
+    .stars-container {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .star {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      background: white;
+      border-radius: 50%;
+      box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+      animation: fall linear infinite;
+      opacity: 0;
+    }
+
+    @keyframes fall {
+      0% {
+        opacity: 0;
+        transform: translateY(-100px);
+      }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% {
+        opacity: 0;
+        transform: translateY(100vh);
+      }
+    }
+
+    /* Floating hearts */
+    .hearts-container {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .floating-heart {
+      position: absolute;
+      font-size: 28px;
+      animation: float-heart 12s ease-in-out infinite;
+      opacity: 0;
+      filter: drop-shadow(0 5px 15px rgba(255, 107, 157, 0.6));
+    }
+
+    @keyframes float-heart {
+      0% {
+        opacity: 0;
+        transform: translateY(100vh) scale(0.5) rotate(0deg);
+      }
+      10% { opacity: 0.7; }
+      90% { opacity: 0.7; }
+      100% {
+        opacity: 0;
+        transform: translateY(-100px) scale(1.2) rotate(360deg);
+      }
+    }
+
+    /* Content container */
+    .content {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      max-width: 600px;
+      width: 100%;
+      animation: fadeIn 2s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Main heading */
+    .main-heading {
+      font-size: 48px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #ff6b9d, #ffa6c1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 20px;
+      text-shadow: 0 0 40px rgba(255, 107, 157, 0.5);
+      animation: pulse-glow 3s ease-in-out infinite;
+      line-height: 1.3;
+    }
+
+    @keyframes pulse-glow {
+      0%, 100% {
+        filter: brightness(1);
+        transform: scale(1);
+      }
+      50% {
+        filter: brightness(1.15);
+        transform: scale(1.02);
+      }
+    }
+
+    /* Sub-line */
+    .sub-line {
+      font-size: 22px;
+      color: #ffd4e8;
+      margin-bottom: 35px;
+      opacity: 0.9;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+      animation: fadeIn 2.5s ease-out 0.5s both;
+      line-height: 1.6;
+    }
+
+    /* Gentle note */
+    .gentle-note {
+      display: inline-block;
+      background: linear-gradient(135deg, rgba(255, 107, 157, 0.15), rgba(196, 69, 105, 0.15));
+      border: 2px solid rgba(255, 166, 193, 0.3);
+      border-radius: 15px;
+      padding: 15px 25px;
+      margin-bottom: 30px;
+      color: #ffa6c1;
+      font-size: 16px;
+      font-style: italic;
+      text-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
+      animation: fadeIn 3s ease-out 1s both;
+      text-align: center;
+    }
+
+    /* Action button */
+    .action-button {
+      padding: 20px 50px;
+      font-size: 22px;
+      font-weight: 700;
+      border-radius: 50px;
+      border: none;
+      cursor: pointer;
+      background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
+      color: white;
+      font-family: 'Georgia', serif;
+      box-shadow: 
+        0 20px 50px rgba(255,107,157,.7),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+      letter-spacing: 1px;
+      animation: fadeIn 3.5s ease-out 1.5s both, pulse-button 2.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse-button {
+      0%, 100% {
+        box-shadow: 0 20px 50px rgba(255,107,157,.7);
+        transform: scale(1);
+      }
+      50% {
+        box-shadow: 0 25px 60px rgba(255,107,157,.9);
+        transform: scale(1.03);
+      }
+    }
+
+    .action-button::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s ease, height 0.6s ease;
+    }
+
+    .action-button:hover::before {
+      width: 400px;
+      height: 400px;
+    }
+
+    .action-button:hover {
+      transform: translateY(-8px) scale(1.08);
+      box-shadow: 
+        0 30px 70px rgba(255,107,157,.9),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+      animation: none;
+    }
+
+    .action-button:active {
+      transform: translateY(-4px) scale(1.05);
+    }
+
+    .action-button span {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Footer line */
+    .footer-line {
+      margin-top: 50px;
+      font-size: 14px;
+      color: #d4a5c4;
+      opacity: 0.7;
+      font-style: italic;
+      animation: fadeIn 4s ease-out 2s both;
+    }
+
+    /* Mobile responsive */
+    @media (max-width: 768px) {
+      .main-heading {
+        font-size: 38px;
+      }
+
+      .sub-line {
+        font-size: 19px;
+      }
+
+      .gentle-note {
+        font-size: 15px;
+        padding: 13px 22px;
+      }
+
+      .action-button {
+        font-size: 20px;
+        padding: 18px 45px;
+      }
+
+      .footer-line {
+        font-size: 13px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .main-heading {
+        font-size: 32px;
+      }
+
+      .sub-line {
+        font-size: 17px;
+      }
+
+      .gentle-note {
+        font-size: 14px;
+        padding: 12px 20px;
+      }
+
+      .action-button {
+        font-size: 18px;
+        padding: 16px 40px;
+      }
+
+      .footer-line {
+        font-size: 12px;
+        margin-top: 40px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="stars-container" id="stars"></div>
+  <div class="hearts-container" id="hearts"></div>
+
+  <div class="content">
+    <h1 class="main-heading">Hey… are you ready? 💕</h1>
+    
+    <p class="sub-line">
+      I made something small for you.<br>
+      Take a deep breath… and step in slowly.
+    </p>
+
+    <div class="gentle-note">
+      Headphones recommended 🎧 Soft music may play.
+    </div>
+
+    <button class="action-button" id="beginButton">
+      <span>✨ Let's Begin ✨</span>
+    </button>
+
+    <p class="footer-line">
+      Made with a lot of overthinking and love 🤍
+    </p>
+  </div>
+
+  <script>
+    // Falling stars
+    const starsContainer = document.getElementById("stars");
+    
+    function createFallingStar() {
+      const star = document.createElement("div");
+      star.className = "star";
+      star.style.left = Math.random() * 100 + "%";
+      star.style.animationDuration = (3 + Math.random() * 4) + "s";
+      star.style.animationDelay = Math.random() * 3 + "s";
+      starsContainer.appendChild(star);
+      
+      setTimeout(() => star.remove(), 8000);
+    }
+
+    for (let i = 0; i < 50; i++) {
+      createFallingStar();
+    }
+
+    setInterval(() => createFallingStar(), 500);
+
+    // Floating hearts
+    const heartsContainer = document.getElementById("hearts");
+    const heartSymbols = ['💕', '💖', '💗', '💝', '❤️', '💘'];
+    
+    function createFloatingHeart() {
+      const heart = document.createElement("div");
+      heart.className = "floating-heart";
+      heart.textContent = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+      heart.style.left = Math.random() * 100 + "%";
+      heart.style.animationDuration = (10 + Math.random() * 5) + "s";
+      heart.style.animationDelay = Math.random() * 3 + "s";
+      heartsContainer.appendChild(heart);
+      
+      setTimeout(() => heart.remove(), 16000);
+    }
+
+    for (let i = 0; i < 15; i++) {
+      createFloatingHeart();
+    }
+
+    setInterval(() => createFloatingHeart(), 1200);
+
+    // Button click handler
+    document.getElementById('beginButton').addEventListener('click', function() {
+      // Set localStorage
+      localStorage.setItem("musicAllowed", "yes");
+      
+      // Redirect to next page (adjust URL as needed)
+      window.location.href = "face_detect.html"; // or whatever your next page is
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>For My Love</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(180deg, #1a0a1f 0%, #2d1435 50%, #4a1f4a 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Georgia', serif;
+      overflow-x: hidden;
+      padding: 20px;
+      position: relative;
+    }
+
+    /* Falling stars */
+    .stars-container {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .star {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      background: white;
+      border-radius: 50%;
+      box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+      animation: fall linear infinite;
+      opacity: 0;
+    }
+
+    @keyframes fall {
+      0% {
+        opacity: 0;
+        transform: translateY(-100px);
+      }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% {
+        opacity: 0;
+        transform: translateY(100vh);
+      }
+    }
+
+    /* Floating hearts */
+    .hearts-container {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .floating-heart {
+      position: absolute;
+      font-size: 28px;
+      animation: float-heart 12s ease-in-out infinite;
+      opacity: 0;
+      filter: drop-shadow(0 5px 15px rgba(255, 107, 157, 0.6));
+    }
+
+    @keyframes float-heart {
+      0% {
+        opacity: 0;
+        transform: translateY(100vh) scale(0.5) rotate(0deg);
+      }
+      10% { opacity: 0.7; }
+      90% { opacity: 0.7; }
+      100% {
+        opacity: 0;
+        transform: translateY(-100px) scale(1.2) rotate(360deg);
+      }
+    }
+
+    /* ENVELOPE SCREEN */
+    .envelope-screen {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      background: transparent;
+      transition: opacity 1s ease;
+    }
+
+    .envelope-screen.hide {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .envelope-wrapper {
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .envelope-wrapper:hover {
+      transform: scale(1.05);
+    }
+
+    .envelope {
+      position: relative;
+      width: 280px;
+      height: 180px;
+      margin: 0 auto 20px;
+    }
+
+    .envelope-body {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 140px;
+      background: linear-gradient(135deg, #ffa6c1 0%, #ff6b9d 100%);
+      border-radius: 0 0 15px 15px;
+      box-shadow: 
+        0 20px 60px rgba(255, 107, 157, 0.6),
+        inset 0 -2px 10px rgba(255, 255, 255, 0.3);
+    }
+
+    .envelope-flap {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 140px;
+      background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
+      transform-origin: top center;
+      clip-path: polygon(0 0, 50% 60%, 100% 0);
+      box-shadow: 0 10px 30px rgba(255, 107, 157, 0.5);
+      transition: transform 0.8s ease;
+      z-index: 2;
+    }
+
+    .envelope-wrapper.opening .envelope-flap {
+      transform: rotateX(180deg);
+    }
+
+    .heart-seal {
+      position: absolute;
+      top: 50px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 50px;
+      z-index: 3;
+      filter: drop-shadow(0 5px 15px rgba(255, 255, 255, 0.5));
+      animation: pulse-seal 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-seal {
+      0%, 100% { transform: translateX(-50%) scale(1); }
+      50% { transform: translateX(-50%) scale(1.1); }
+    }
+
+    .envelope-text {
+      font-size: 22px;
+      color: #ffa6c1;
+      font-style: italic;
+      text-shadow: 0 0 20px rgba(255, 166, 193, 0.8);
+      animation: fade-pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes fade-pulse {
+      0%, 100% { opacity: 0.7; }
+      50% { opacity: 1; }
+    }
+
+    /* HEART REVEAL */
+    .heart-reveal {
+      position: absolute;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 101;
+    }
+
+    .heart-reveal.show {
+      display: flex;
+      animation: fadeIn 1s ease;
+    }
+
+    .smiling-heart {
+      position: relative;
+      animation: heartBounce 1.5s ease;
+    }
+
+    .heart-emoji {
+      font-size: 150px;
+      display: block;
+      filter: drop-shadow(0 10px 30px rgba(255, 107, 157, 0.8));
+      animation: heartGlow 1.5s ease-in-out infinite;
+    }
+
+    @keyframes heartGlow {
+      0%, 100% { 
+        transform: scale(1);
+        filter: drop-shadow(0 10px 30px rgba(255, 107, 157, 0.8));
+      }
+      50% { 
+        transform: scale(1.1);
+        filter: drop-shadow(0 15px 40px rgba(255, 107, 157, 1));
+      }
+    }
+
+    .smile {
+      position: absolute;
+      top: 55%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 60px;
+      animation: smileAppear 0.5s ease 0.3s forwards;
+      opacity: 0;
+    }
+
+    @keyframes smileAppear {
+      to { opacity: 1; }
+    }
+
+    @keyframes heartBounce {
+      0% { 
+        transform: scale(0) rotate(-45deg);
+        opacity: 0;
+      }
+      60% { 
+        transform: scale(1.2) rotate(0deg);
+      }
+      80% { 
+        transform: scale(0.9) rotate(0deg);
+      }
+      100% { 
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* Content */
+    .content {
+      position: relative;
+      z-index: 10;
+      max-width: 750px;
+      width: 100%;
+      text-align: center;
+      animation: fadeIn 1.5s ease-out;
+      border: 2px solid #ffa6c1;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 
+        0 0 30px rgba(255, 166, 193, 0.6),
+        0 0 60px rgba(255, 166, 193, 0.4),
+        inset 0 0 30px rgba(255, 166, 193, 0.1);
+    }
+
+    /* Letter heading */
+    .letter-heading {
+      font-size: 42px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #ff6b9d, #ffa6c1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 40px;
+      text-shadow: 0 0 40px rgba(255, 107, 157, 0.5);
+      animation: fadeInUp 1.2s ease-out;
+    }
+
+    @keyframes fadeInUp {
+      from { 
+        opacity: 0; 
+        transform: translateY(20px);
+      }
+      to { 
+        opacity: 1; 
+        transform: translateY(0);
+      }
+    }
+
+    /* Lines */
+    .line {
+      opacity: 0;
+      font-size: 18px;
+      line-height: 1.8;
+      margin-bottom: 18px;
+      color: #ffd4e8;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+      transition: opacity 1.5s ease, transform 1.5s ease;
+      transform: translateY(15px);
+      padding-left: 28px;
+      position: relative;
+      text-align: left;
+    }
+
+    .line::before {
+      content: '💕';
+      position: absolute;
+      left: 0;
+      opacity: 0;
+      font-size: 20px;
+      transition: opacity 1s ease;
+    }
+
+    .line.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .line.show::before {
+      opacity: 1;
+      transition-delay: 0.5s;
+    }
+
+    /* Signature */
+    .signature {
+      margin-top: 35px;
+      text-align: right;
+      font-size: 24px;
+      font-style: italic;
+      font-weight: 600;
+      opacity: 0;
+      background: linear-gradient(135deg, #ff6b9d, #ffa6c1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 20px rgba(255, 107, 157, 0.5);
+    }
+
+    .signature.show {
+      animation: fadeInUp 1.5s ease forwards;
+    }
+
+    /* Final section */
+    .final-section {
+      margin-top: 45px;
+      text-align: center;
+      opacity: 0;
+    }
+
+    .final-section.show {
+      animation: fadeInUp 2s ease forwards;
+    }
+
+    .divider {
+      width: 80px;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #ffa6c1, transparent);
+      margin: 0 auto 28px;
+      opacity: 0.7;
+      box-shadow: 0 0 10px rgba(255, 166, 193, 0.5);
+    }
+
+    .final-message {
+      font-size: 18px;
+      color: #ffa6c1;
+      margin-bottom: 25px;
+      font-style: italic;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .final-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 18px 45px;
+      font-size: 20px;
+      font-weight: 700;
+      border-radius: 50px;
+      border: none;
+      cursor: pointer;
+      background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
+      color: white;
+      font-family: 'Georgia', serif;
+      box-shadow: 
+        0 20px 50px rgba(255,107,157,.7),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+      letter-spacing: 0.5px;
+    }
+
+    .final-button::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s ease, height 0.6s ease;
+    }
+
+    .final-button:hover::before {
+      width: 400px;
+      height: 400px;
+    }
+
+    .final-button:hover {
+      transform: translateY(-8px) scale(1.05);
+      box-shadow: 
+        0 30px 70px rgba(255,107,157,.9),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    }
+
+    .final-button:active {
+      transform: translateY(-4px) scale(1.02);
+    }
+
+    .final-button span {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Mobile responsive */
+    @media (max-width: 768px) {
+      .envelope {
+        width: 240px;
+        height: 160px;
+      }
+
+      .envelope-body {
+        height: 120px;
+      }
+
+      .envelope-flap {
+        height: 120px;
+      }
+
+      .heart-seal {
+        top: 45px;
+        font-size: 40px;
+      }
+
+      .envelope-text {
+        font-size: 20px;
+      }
+
+      .heart-emoji {
+        font-size: 120px;
+      }
+
+      .smile {
+        font-size: 50px;
+      }
+
+      .content {
+        padding: 30px;
+      }
+
+      .letter-heading {
+        font-size: 34px;
+        margin-bottom: 35px;
+      }
+
+      .line {
+        font-size: 17px;
+        padding-left: 26px;
+        margin-bottom: 16px;
+      }
+
+      .signature {
+        font-size: 22px;
+        margin-top: 30px;
+      }
+
+      .final-section {
+        margin-top: 40px;
+      }
+
+      .final-message {
+        font-size: 17px;
+      }
+
+      .final-button {
+        font-size: 18px;
+        padding: 16px 40px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .envelope {
+        width: 200px;
+        height: 140px;
+      }
+
+      .envelope-body {
+        height: 100px;
+      }
+
+      .envelope-flap {
+        height: 100px;
+      }
+
+      .heart-seal {
+        top: 35px;
+        font-size: 35px;
+      }
+
+      .envelope-text {
+        font-size: 18px;
+      }
+
+      .heart-emoji {
+        font-size: 100px;
+      }
+
+      .smile {
+        font-size: 40px;
+      }
+
+      .content {
+        padding: 25px;
+      }
+
+      .letter-heading {
+        font-size: 28px;
+      }
+
+      .line {
+        font-size: 16px;
+        line-height: 1.7;
+        padding-left: 24px;
+      }
+
+      .signature {
+        font-size: 20px;
+      }
+
+      .final-message {
+        font-size: 16px;
+      }
+
+      .final-button {
+        font-size: 17px;
+        padding: 15px 38px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="stars-container" id="stars"></div>
+  <div class="hearts-container" id="hearts"></div>
+
+  <!-- ENVELOPE SCREEN -->
+  <div class="envelope-screen" id="envelopeScreen">
+    <div class="envelope-wrapper" id="envelopeWrapper">
+      <div class="envelope">
+        <div class="envelope-flap"></div>
+        <div class="envelope-body"></div>
+        <div class="heart-seal">💕</div>
+      </div>
+      <p class="envelope-text">Click to open...</p>
+    </div>
+    
+    <div class="heart-reveal" id="heartReveal">
+      <div class="smiling-heart">
+        <span class="heart-emoji">❤️</span>
+        <div class="smile">😊</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LETTER CONTENT -->
+  <div class="content" id="mainContent" style="display: none;">
+    
+    <h1 class="letter-heading">Mere Dil Ki Baat...</h1>
+
+    <div class="line" id="l1">Kher ye 40–50 saal toh impossible hai tere liye mujhe jhelna.</div>
+    <div class="line" id="l2">Par haan… tune mujhe bahut kuch sikhaya hai.</div>
+    <div class="line" id="l3">Aisa nahi hai ki main gadha tha 🙃</div>
+    <div class="line" id="l4">Par haan, thoda achha ho gaya hoon pehle se.</div>
+    <div class="line" id="l5">Main jitna tujhse izhaar karoon, bataoon ki tu kitni special hai,</div>
+    <div class="line" id="l6">utna hi kam lagta hai.</div>
+    <div class="line" id="l7">I love you so much bebo… Happy New Year ❤️</div>
+    <div class="line" id="l8">
+      Bas umeed hai main tujhe zyada pareshan nahi karta, jitna tu deserve karti hai utna pyaar de pa raha hoon… sorry kabhi kabhi panic, irritate aur overthink kar jaata hoon… par main sach mein tumse pyaar karta hoon.
+    </div>
+
+    <div class="signature" id="sign">— Your Kallu ❤️</div>
+
+    <div class="final-section" id="final-section">
+      <div class="divider"></div>
+      <div class="final-message">
+        There's one last thing I want you to see…
+      </div>
+      <button class="final-button" id="final-btn">
+        <span>✨ Continue to Surprise ✨</span>
+      </button>
+    </div>
+
+  </div>
+
+  <audio id="bgMusic" loop>
+    <source src="../static/music/bg.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    const envelopeWrapper = document.getElementById("envelopeWrapper");
+    const envelopeScreen = document.getElementById("envelopeScreen");
+    const heartReveal = document.getElementById("heartReveal");
+    const mainContent = document.getElementById("mainContent");
+    const bgMusic = document.getElementById("bgMusic");
+
+    // Envelope click to open
+    envelopeWrapper.onclick = () => {
+      envelopeWrapper.classList.add("opening");
+      
+      // Show smiling heart after envelope opens
+      setTimeout(() => {
+        envelopeWrapper.style.display = "none";
+        heartReveal.classList.add("show");
+      }, 800);
+
+      // Hide envelope screen and show letter
+      setTimeout(() => {
+        envelopeScreen.classList.add("hide");
+        setTimeout(() => {
+          envelopeScreen.style.display = "none";
+          mainContent.style.display = "block";
+          
+          // Start background music
+          const allowed = localStorage.getItem("musicAllowed");
+          if (allowed === "yes") {
+            bgMusic.volume = 0.15;
+            bgMusic.play().catch(() => {});
+          }
+
+          // Reveal letter
+          revealLetter();
+        }, 1000);
+      }, 2500);
+    };
+
+    // Falling stars
+    const starsContainer = document.getElementById("stars");
+    
+    function createFallingStar() {
+      const star = document.createElement("div");
+      star.className = "star";
+      star.style.left = Math.random() * 100 + "%";
+      star.style.animationDuration = (3 + Math.random() * 4) + "s";
+      star.style.animationDelay = Math.random() * 3 + "s";
+      starsContainer.appendChild(star);
+      
+      setTimeout(() => star.remove(), 8000);
+    }
+
+    for (let i = 0; i < 50; i++) {
+      createFallingStar();
+    }
+
+    setInterval(() => createFallingStar(), 500);
+
+    // Floating hearts
+    const heartsContainer = document.getElementById("hearts");
+    const heartSymbols = ['💕', '💖', '💗', '💝', '❤️', '💘'];
+    
+    function createFloatingHeart() {
+      const heart = document.createElement("div");
+      heart.className = "floating-heart";
+      heart.textContent = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+      heart.style.left = Math.random() * 100 + "%";
+      heart.style.animationDuration = (10 + Math.random() * 5) + "s";
+      heart.style.animationDelay = Math.random() * 3 + "s";
+      heartsContainer.appendChild(heart);
+      
+      setTimeout(() => heart.remove(), 16000);
+    }
+
+    for (let i = 0; i < 15; i++) {
+      createFloatingHeart();
+    }
+
+    setInterval(() => createFloatingHeart(), 1200);
+
+    // Reveal letter lines
+    function revealLetter() {
+      const lines = ["l1","l2","l3","l4","l5","l6","l7","l8"];
+      lines.forEach((id, i) => {
+        setTimeout(() => {
+          document.getElementById(id).classList.add("show");
+        }, 800 + i * 2800);
+      });
+
+      setTimeout(() => {
+        document.getElementById("sign").classList.add("show");
+      }, 24000);
+
+      setTimeout(() => {
+        document.getElementById("final-section").classList.add("show");
+      }, 26500);
+    }
+
+    // Button click
+    document.getElementById("final-btn").onclick = () => {
+      window.location.href = "final.html";
+    };
+    
+    localStorage.setItem("musicAllowed", "yes");
+  </script>
+
+</body>
+</html>

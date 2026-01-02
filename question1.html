@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Question For You 💕</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(180deg, #1a0a1f 0%, #2d1435 50%, #4a1f4a 100%);
+      color: white;
+      font-family: 'Georgia', serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+      padding: 20px;
+      position: relative;
+    }
+
+    /* Transition overlay */
+    .transition-overlay {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle, rgba(255, 133, 161, 0.25), rgba(26, 10, 31, 0.98));
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.7s ease;
+    }
+
+    .transition-overlay.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .transition-heart {
+      font-size: 64px;
+      animation: pulseHeart 1.4s infinite;
+      filter: drop-shadow(0 5px 20px rgba(255, 107, 157, 0.8));
+    }
+
+    .transition-text {
+      margin-top: 18px;
+      font-size: 18px;
+      color: #ffd6e8;
+      opacity: 0.9;
+      font-style: italic;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    @keyframes pulseHeart {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.25);
+      }
+    }
+
+    /* Falling stars */
+    .stars-container {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .star {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      background: white;
+      border-radius: 50%;
+      box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+      animation: fall linear infinite;
+      opacity: 0;
+    }
+
+    @keyframes fall {
+      0% {
+        opacity: 0;
+        transform: translateY(-100px);
+      }
+      10% {
+        opacity: 1;
+      }
+      90% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(100vh);
+      }
+    }
+
+    .container {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 500px;
+    }
+
+    .card {
+      background: linear-gradient(135deg, rgba(255, 249, 240, 0.95), rgba(255, 228, 214, 0.95));
+      border-radius: 25px;
+      padding: 45px 40px;
+      box-shadow: 
+        0 25px 80px rgba(255, 107, 157, 0.4),
+        0 0 0 2px rgba(255, 166, 193, 0.3);
+      border: 3px solid rgba(255, 166, 193, 0.5);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Decorative corners */
+    .corner-heart {
+      position: absolute;
+      font-size: 30px;
+      opacity: 0.6;
+      animation: float-gentle 3s ease-in-out infinite;
+    }
+
+    .corner-heart.top-left {
+      top: 15px;
+      left: 15px;
+    }
+
+    .corner-heart.top-right {
+      top: 15px;
+      right: 15px;
+      animation-delay: 1s;
+    }
+
+    .corner-heart.bottom-left {
+      bottom: 15px;
+      left: 15px;
+      animation-delay: 2s;
+    }
+
+    .corner-heart.bottom-right {
+      bottom: 15px;
+      right: 15px;
+      animation-delay: 1.5s;
+    }
+
+    @keyframes float-gentle {
+      0%, 100% {
+        transform: translateY(0) scale(1);
+      }
+      50% {
+        transform: translateY(-8px) scale(1.1);
+      }
+    }
+
+    /* Disclaimer section */
+    .disclaimer {
+      background: linear-gradient(135deg, rgba(255, 107, 157, 0.15), rgba(196, 69, 105, 0.15));
+      border: 2px solid rgba(255, 107, 157, 0.3);
+      border-radius: 15px;
+      padding: 20px 25px;
+      margin-bottom: 30px;
+      color: #8b4569;
+      font-size: 17px;
+      font-style: italic;
+      line-height: 1.6;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      animation: fadeInScale 0.8s ease-out;
+    }
+
+    .disclaimer-emoji {
+      font-size: 24px;
+      margin-right: 8px;
+      display: inline-block;
+      animation: wiggle 2s ease-in-out infinite;
+    }
+
+    @keyframes wiggle {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(-15deg); }
+      75% { transform: rotate(15deg); }
+    }
+
+    @keyframes fadeInScale {
+      from {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    /* Question section */
+    .question-section {
+      animation: fadeInUp 1s ease-out 0.3s both;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    h2 {
+      font-size: 26px;
+      font-weight: 600;
+      margin-bottom: 30px;
+      color: #4a2c4a;
+      line-height: 1.5;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Buttons */
+    .buttons-container {
+      display: flex;
+      gap: 15px;
+      margin-top: 25px;
+    }
+
+    button {
+      flex: 1;
+      padding: 16px 25px;
+      font-size: 18px;
+      font-weight: 700;
+      border-radius: 50px;
+      border: none;
+      cursor: pointer;
+      font-family: 'Georgia', serif;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    button::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      transform: translate(-50%, -50%);
+      transition: width 0.5s, height 0.5s;
+    }
+
+    button:hover::before {
+      width: 300px;
+      height: 300px;
+    }
+
+    button span {
+      position: relative;
+      z-index: 1;
+    }
+
+    .yes {
+      background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
+      color: white;
+      box-shadow: 0 8px 25px rgba(255, 107, 157, 0.5);
+    }
+
+    .yes:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 35px rgba(255, 107, 157, 0.6);
+    }
+
+    .no {
+      background: white;
+      color: #ff6b9d;
+      border: 2px solid #ff6b9d;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .no:hover {
+      transform: translateY(-3px);
+      background: #fff5f8;
+      box-shadow: 0 12px 35px rgba(255, 107, 157, 0.3);
+    }
+
+    /* Listen button */
+    #listenBtn {
+      width: 100%;
+      background: linear-gradient(135deg, #ffa6c1 0%, #ff85a1 100%);
+      color: white;
+      margin-top: 20px;
+      padding: 18px;
+      font-size: 19px;
+      animation: pulse-glow 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-glow {
+      0%, 100% {
+        box-shadow: 0 8px 25px rgba(255, 107, 157, 0.5);
+        transform: scale(1);
+      }
+      50% {
+        box-shadow: 0 12px 35px rgba(255, 107, 157, 0.7);
+        transform: scale(1.02);
+      }
+    }
+
+    /* Video */
+    video {
+      width: 100%;
+      margin-top: 25px;
+      border-radius: 20px;
+      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4);
+      border: 3px solid rgba(255, 166, 193, 0.5);
+    }
+
+    /* Message */
+    #message {
+      margin-top: 25px;
+      font-size: 20px;
+      color: #8b4569;
+      line-height: 1.7;
+      font-style: italic;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .fade {
+      animation: fadeIn 0.6s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* Mobile responsive */
+    @media (max-width: 480px) {
+      .card {
+        padding: 35px 25px;
+      }
+
+      .disclaimer {
+        font-size: 15px;
+        padding: 18px 20px;
+      }
+
+      h2 {
+        font-size: 22px;
+      }
+
+      .buttons-container {
+        flex-direction: column;
+      }
+
+      button {
+        font-size: 16px;
+        padding: 14px 20px;
+      }
+
+      .corner-heart {
+        font-size: 24px;
+      }
+
+      .transition-heart {
+        font-size: 52px;
+      }
+
+      .transition-text {
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Transition -->
+  <div class="transition-overlay" id="transition">
+    <div class="transition-heart">❤️</div>
+    <div class="transition-text">One heartbeat later…</div>
+  </div>
+
+  <div class="stars-container" id="stars"></div>
+
+  <div class="container">
+    <div class="card">
+      
+      <div class="corner-heart top-left">💕</div>
+      <div class="corner-heart top-right">💖</div>
+      <div class="corner-heart bottom-left">💗</div>
+      <div class="corner-heart bottom-right">💝</div>
+
+      <!-- Disclaimer -->
+      <div class="disclaimer" id="disclaimer">
+        <span class="disclaimer-emoji">🤔</span>
+        <strong>Before you answer…</strong> please note, I overthink professionally.
+      </div>
+
+      <!-- Question -->
+      <div class="question-section" id="question-section">
+        <h2 id="question">
+          Do you think I talk nonsense?
+        </h2>
+
+        <!-- Buttons -->
+        <div class="buttons-container">
+          <button class="yes" onclick="handleYes()">
+            <span>Yes</span>
+          </button>
+          <button class="no" onclick="handleNo()">
+            <span>No</span>
+          </button>
+        </div>
+
+        <!-- Listen Button -->
+        <button id="listenBtn" style="display:none;" onclick="playVideo()">
+          <span>🔊 Listen to my thoughts</span>
+        </button>
+
+        <!-- Video -->
+        <video id="reactionVideo" playsinline style="display:none;"></video>
+
+        <!-- Text Message -->
+        <div id="message"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // Falling stars
+    const starsContainer = document.getElementById("stars");
+    
+    function createFallingStar() {
+      const star = document.createElement("div");
+      star.className = "star";
+      star.style.left = Math.random() * 100 + "%";
+      star.style.animationDuration = (3 + Math.random() * 4) + "s";
+      star.style.animationDelay = Math.random() * 3 + "s";
+      starsContainer.appendChild(star);
+      
+      setTimeout(() => star.remove(), 8000);
+    }
+
+    for (let i = 0; i < 40; i++) {
+      createFallingStar();
+    }
+
+    setInterval(() => createFallingStar(), 500);
+
+    // Question logic
+    const video = document.getElementById("reactionVideo");
+    const message = document.getElementById("message");
+    const listenBtn = document.getElementById("listenBtn");
+    const disclaimer = document.getElementById("disclaimer");
+    const transition = document.getElementById("transition");
+
+    function handleYes() {
+      // Hide disclaimer and buttons
+      disclaimer.style.display = "none";
+      document.querySelector(".buttons-container").style.display = "none";
+
+      // Prepare video
+      video.src = "../static/animations/question1.mp4";
+      video.muted = true;
+      video.load();
+
+      // Show listen button
+      listenBtn.style.display = "block";
+    }
+
+    function playVideo() {
+      listenBtn.style.display = "none";
+
+      video.style.display = "block";
+      video.classList.add("fade");
+      video.muted = false;
+      video.play();
+
+      // After video ends → next question
+      video.onended = () => {
+        goNext("question2.html");
+      };
+    }
+
+    function handleNo() {
+      // Hide disclaimer and buttons
+      disclaimer.style.display = "none";
+      document.querySelector(".buttons-container").style.display = "none";
+
+      message.innerText = "Then that means you understand me better than I explain myself.";
+      message.classList.add("fade");
+
+      setTimeout(() => {
+        goNext("question2.html");
+      }, 2500);
+    }
+
+    function goNext(url) {
+      transition.classList.add("show");
+      setTimeout(() => {
+        window.location.href = url;
+      }, 1800);
+    }
+     localStorage.setItem("musicAllowed", "yes");
+  </script>
+    <audio id="bgMusic" loop>
+  <source src="../static/music/bg1.mp3" type="audio/mpeg">
+</audio>
+<script>
+  const bgMusic = document.getElementById("bgMusic");
+
+  window.addEventListener("load", () => {
+    const allowed = localStorage.getItem("musicAllowed");
+
+    if (allowed === "yes") {
+      bgMusic.volume = 0.15;   // soft romantic volume
+      bgMusic.play().catch(() => {});
+    }
+  });
+</script>
+
+
+</body>
+</html>
