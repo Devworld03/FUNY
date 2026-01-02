@@ -436,10 +436,30 @@
     </div>
   </div>
 
+  <audio id="bgMusic" loop>
+    <source src="static/music/bg1.mp3" type="audio/mpeg">
+  </audio>
+
   <script>
-    // Falling stars
+    // Get all elements first
+    const bgMusic = document.getElementById("bgMusic");
     const starsContainer = document.getElementById("stars");
-    
+    const video = document.getElementById("reactionVideo");
+    const videoContainer = document.getElementById("videoContainer");
+    const watchBtn = document.getElementById("watchBtn");
+    const thoughtfulNote = document.getElementById("thoughtful-note");
+    const transition = document.getElementById("transition");
+
+    // Start background music on page load if allowed
+    window.addEventListener("load", () => {
+      const allowed = localStorage.getItem("musicAllowed");
+      if (allowed === "yes") {
+        bgMusic.volume = 0.15;
+        bgMusic.play().catch(() => {});
+      }
+    });
+
+    // Falling stars
     function createFallingStar() {
       const star = document.createElement("div");
       star.className = "star";
@@ -457,13 +477,7 @@
 
     setInterval(() => createFallingStar(), 500);
 
-    // Video logic
-    const video = document.getElementById("reactionVideo");
-    const videoContainer = document.getElementById("videoContainer");
-    const watchBtn = document.getElementById("watchBtn");
-    const thoughtfulNote = document.getElementById("thoughtful-note");
-    const transition = document.getElementById("transition");
-
+    // Play video when button is clicked
     function playVideo() {
       // Hide note and button
       thoughtfulNote.style.display = "none";
@@ -473,41 +487,31 @@
       videoContainer.style.display = "block";
       videoContainer.classList.add("fade");
 
-      // Play video
-      video.src = "../static/animations/question3.mp4";
+      // Play video with sound
+      video.src = "static/animations/question3.mp4";
       video.muted = false;
-      video.play();
+      video.currentTime = 0;
+      video.play().catch(err => {
+        console.log("Video play error:", err);
+      });
 
-      // After video ends → transition to letter
+      // Go to next page when video ends
       video.onended = () => {
         goNext("letter.html");
       };
     }
 
+    // Navigate to next page with transition
     function goNext(url) {
       transition.classList.add("show");
       setTimeout(() => {
         window.location.href = url;
       }, 1800);
     }
+
+    // Save music preference
     localStorage.setItem("musicAllowed", "yes");
-
   </script>
-      <audio id="bgMusic" loop>
-  <source src="../static/music/bg1.mp3" type="audio/mpeg">
-</audio>
-<script>
-  const bgMusic = document.getElementById("bgMusic");
-
-  window.addEventListener("load", () => {
-    const allowed = localStorage.getItem("musicAllowed");
-
-    if (allowed === "yes") {
-      bgMusic.volume = 0.15;   // soft romantic volume
-      bgMusic.play().catch(() => {});
-    }
-  });
-</script>
 
 </body>
 </html>
