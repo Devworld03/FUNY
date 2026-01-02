@@ -397,6 +397,19 @@
       box-shadow: 0 20px 50px rgba(255,107,157,.8);
     }
 
+    .closure-text {
+      margin-top: 18px;
+      font-size: 14px;
+      opacity: 0;
+      color: rgba(255, 212, 232, 0.7);
+      transition: opacity 2s ease;
+      font-style: italic;
+    }
+
+    .closure-text.show {
+      opacity: 1;
+    }
+
     @keyframes fadeIn {
       from { opacity: 0; transform: scale(0.95); }
       to { opacity: 1; transform: scale(1); }
@@ -492,18 +505,6 @@
         padding: 12px 30px;
       }
     }
-    .closure-text {
-  margin-top: 18px;
-  font-size: 14px;
-  opacity: 0;
-  color: rgba(255, 212, 232, 0.7);
-  transition: opacity 2s ease;
-  font-style: italic;
-}
-.closure-text.show {
-  opacity: 1;
-}
-
   </style>
 </head>
 
@@ -532,7 +533,7 @@
         <div class="frame-heart bottom-right">💝</div>
         
         <video id="finalVideo" playsinline>
-          <source src="../static/animations/final.mp4" type="video/mp4">
+          <source src="static/animations/final.mp4" type="video/mp4">
         </video>
       </div>
     </div>
@@ -546,10 +547,9 @@
         <div class="frame-heart bottom-right">💝</div>
         
         <div class="final-content">
-          <img src="../static/animations/image.png" id="finalImage" alt="Our photo">
+          <img src="static/animations/image.png" id="finalImage" alt="Our photo">
 
           <div class="final-overlay">
-
             <div class="end-message" id="msg1">
               Bas yahi chhota sa surprise tha kuki tu bahut door h abhi 🥺
             </div>
@@ -566,9 +566,9 @@
             <button class="end-btn" id="endBtn">
               Love you too, Kallu ❤️
             </button>
-              <div class="closure-text" id="closureText">
-  Saved in my heart 🤍
-</div>
+            <div class="closure-text" id="closureText">
+              Saved in my heart 🤍
+            </div>
           </div>
         </div>
       </div>
@@ -576,17 +576,27 @@
 
   </div>
 
-
-
   <!-- BACKGROUND MUSIC AFTER VIDEO -->
   <audio id="endMusic" loop>
-    <source src="../static/music/bg1.mp3" type="audio/mpeg">
+    <source src="static/music/bg1.mp3" type="audio/mpeg">
   </audio>
 
   <script>
-    // Falling stars
+    // Get all elements first
     const starsContainer = document.getElementById("stars");
-    
+    const heartsContainer = document.getElementById("hearts");
+    const playBtn = document.getElementById("playBtn");
+    const startScreen = document.getElementById("startScreen");
+    const videoContainer = document.getElementById("videoContainer");
+    const video = document.getElementById("finalVideo");
+    const finalScreen = document.getElementById("finalScreen");
+    const finalImage = document.getElementById("finalImage");
+    const endMusic = document.getElementById("endMusic");
+    const msgs = document.querySelectorAll(".end-message");
+    const endBtn = document.getElementById("endBtn");
+    const closureText = document.getElementById("closureText");
+
+    // Falling stars
     function createFallingStar() {
       const star = document.createElement("div");
       star.className = "star";
@@ -605,7 +615,6 @@
     setInterval(() => createFallingStar(), 500);
 
     // Floating hearts
-    const heartsContainer = document.getElementById("hearts");
     const heartSymbols = ['💕', '💖', '💗', '💝', '❤️'];
     
     function createFloatingHeart() {
@@ -626,28 +635,20 @@
 
     setInterval(() => createFloatingHeart(), 1500);
 
-    // Main logic
-    const playBtn = document.getElementById("playBtn");
-    const startScreen = document.getElementById("startScreen");
-    const videoContainer = document.getElementById("videoContainer");
-    const video = document.getElementById("finalVideo");
-    const finalScreen = document.getElementById("finalScreen");
-    const finalImage = document.getElementById("finalImage");
-    const endMusic = document.getElementById("endMusic");
-    const msgs = document.querySelectorAll(".end-message");
-    const endBtn = document.getElementById("endBtn");
-
+    // Play button click
     playBtn.onclick = () => {
-   startScreen.style.display = "none";
-   videoContainer.style.display = "block";
+      startScreen.style.display = "none";
+      videoContainer.style.display = "block";
 
-  // tiny breathing pause
-  setTimeout(() => {
-    video.play();
-  }, 350); // 300–400ms is perfect
-};
+      // Tiny breathing pause before video plays
+      setTimeout(() => {
+        video.play().catch(err => {
+          console.log("Video play error:", err);
+        });
+      }, 350);
+    };
 
-
+    // Video ended
     video.onended = () => {
       videoContainer.style.display = "none";
       finalScreen.style.display = "block";
@@ -658,7 +659,6 @@
 
       // Photo visible for 3 seconds
       setTimeout(() => {
-        // Fade the photo
         finalImage.classList.add("fade-out");
       }, 3000);
 
@@ -669,41 +669,38 @@
         }, 4500 + i * 1800);
       });
 
-      // Show button at the end, inside the box
+      // Show button at the end
       setTimeout(() => {
         endBtn.classList.add("show");
       }, 11500);
     };
 
+    // End button click
     endBtn.onclick = () => {
-  const closure = document.getElementById("closureText");
+      // Show final soft line
+      closureText.classList.add("show");
 
-  // show final soft line
-  closure.classList.add("show");
+      // Fade music
+      let vol = endMusic.volume;
+      const fade = setInterval(() => {
+        if (vol > 0.01) {
+          vol -= 0.01;
+          endMusic.volume = vol;
+        } else {
+          clearInterval(fade);
+          endMusic.pause();
+        }
+      }, 80);
 
-  // fade music
-  let vol = music.volume;
-  const fade = setInterval(() => {
-    if (vol > 0.01) {
-      vol -= 0.01;
-      music.volume = vol;
-    } else {
-      clearInterval(fade);
-      music.pause();
-    }
-  }, 80);
+      // Dim screen slightly
+      document.body.style.transition = "background 2s ease";
+      document.body.style.background = "linear-gradient(180deg, #120815, #1a0a1f)";
 
-  // dim screen slightly
-  document.body.style.transition = "background 2s ease";
-  document.body.style.background =
-    "linear-gradient(180deg, #120815, #1a0a1f)";
-
-  // exit after closure moment
-  setTimeout(() => {
-    window.location.href = "about:blank";
-  }, 3000);
-};
-
+      // Exit after closure moment
+      setTimeout(() => {
+        window.location.href = "about:blank";
+      }, 3000);
+    };
   </script>
 
 </body>
